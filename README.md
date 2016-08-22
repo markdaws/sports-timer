@@ -15,5 +15,4 @@ If you are not seeing the correct font when the page loads, make sure you disabl
 This app has been tested on iOS on both an iPhone and iPad and on Chrome/Mac.
 
 ##TODO:
- - Countdown when starting the timer
  - Tabata feature

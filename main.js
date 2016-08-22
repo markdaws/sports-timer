@@ -62,12 +62,16 @@ Timer.prototype = {
             this._newLapCb(this);
         }
         else {
-            this._startTime = null;
-            this._runningTotal = 0;
-            this._currentTotal = 0;
-            this.laps = [];
+            this.reset();
             this._clearCb(this);
         }
+    },
+
+    reset: function() {
+        this._startTime = null;
+        this._runningTotal = 0;
+        this._currentTotal = 0;
+        this.laps = [];
     },
 
     startTimer: function() {
@@ -104,20 +108,50 @@ Timer.prototype = {
 (function() {
 
     var selectedLap = null;
+    var isCountdown = true;
 
     var lapElByIndex = function(index) {
         return document.getElementsByClassName('lap' + index)[0];
     };
-    var renderTime = function(elapsed) {
+    var renderTime = function(elapsed, format) {
         var min = Util.pad(parseInt((elapsed / 1000) / 60, 10), 2);
         var sec = Util.pad(parseInt(elapsed / 1000 % 60, 10), 2);
         var el = document.getElementsByClassName('time')[0];
-        el.innerText = min + ':' + sec;
+
+        if (!format) {
+            format = 'MM:SS';
+        }
+
+        switch (format) {
+        case 'MM:SS':
+            el.innerText = min + ':' + sec;
+            break;
+
+        case 'SS':
+            el.innerText = sec;
+        }
     };
 
     var tickCb = function(timer) {
         if (!selectedLap) {
-            renderTime(timer.getElapsed());
+
+            var elapsed = timer.getElapsed();
+            var format = 'MM:SS';
+            if (isCountdown) {
+                format = 'SS';
+
+                // Counting down from 10
+                if (elapsed > 10000) {
+                    isCountdown = false;
+                    elapsed = elapsed - 10000;
+                    timer.reset();
+                }
+                else {
+                    //11000 so that 10 shows for 1 second
+                    elapsed = 11000 - elapsed;
+                }
+            }
+            renderTime(elapsed, format);
         }
     };
     var newLapCb = function(timer) {
@@ -128,10 +162,11 @@ Timer.prototype = {
         for (var i=0; i<10; ++i) {
             lapElByIndex(i).classList.add('hidden');
         }
-        selectedLap = null;
         for (var i=0; i<10; ++i) {
             lapElByIndex(i).classList.remove('lapSelected');
         }
+        selectedLap = null;
+        isCountdown = true;
     };
 
     var timer = new Timer(tickCb, newLapCb, clearCb);
