@@ -1,0 +1,60 @@
+@font-face {
+    font-family: "LED";
+    src: url("digital-7-mono.ttf");
+}
+
+body {
+    background-color: black;
+}
+
+.hidden {
+    visibility: hidden;
+}
+
+.lap {
+    fill: gray;
+    cursor: pointer;
+}
+
+.lapSelected {
+    fill: #00ff00;
+}
+
+#lapReset {
+    fill: gray;
+}
+
+#lapResetBorder {
+    stroke: gray;
+}
+
+#lapReset,
+#startStop {
+    cursor: pointer;
+}
+
+.noselect {
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none;   /* Chrome/Safari/Opera */
+    -khtml-user-select: none;    /* Konqueror */
+    -moz-user-select: none;      /* Firefox */
+    -ms-user-select: none;       /* Internet Explorer/Edge */
+    user-select: none;           /* Non-prefixed version, currently
+                                  not supported by any browser */
+}
+
+#startStop {
+    fill: #00ff00;
+}
+
+#startStopBorder {
+    stroke: #00ff00;
+}
+
+.time {
+    color: red;
+    padding: 0;
+    margin: 0;
+    font-family: "LED";
+    font-size: 43vw;
+}

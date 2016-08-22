@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Sports Timer - great for Crossfit</title>
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+  </head>
+  <body>
+    <p class="time noselect" style="margin-bottom:-10px">00:00</p>
+    <svg viewBox="0 0 100 20" xmlns="http://www.w3.org/2000/svg">
+      <circle id="lapResetBorder" r="8.4" cx="8.5" cy="8.5" stroke-width="0.2" fill="none" />
+      <circle id="lapReset" r="8" cx="8.5" cy="8.5"/>
+
+      <g id="laps">
+        <circle class="lap lap0 hidden" data-lap="0" r="2" cx="23" cy="8" />
+        <circle class="lap lap1 hidden" data-lap="1" r="2" cx="29" cy="8" />
+        <circle class="lap lap2 hidden" data-lap="2" r="2" cx="35" cy="8" />
+        <circle class="lap lap3 hidden" data-lap="3" r="2" cx="41" cy="8" />
+        <circle class="lap lap4 hidden" data-lap="4" r="2" cx="47" cy="8" />
+        <circle class="lap lap5 hidden" data-lap="5" r="2" cx="53" cy="8" />
+        <circle class="lap lap6 hidden" data-lap="6" r="2" cx="59" cy="8" />
+        <circle class="lap lap7 hidden" data-lap="7" r="2" cx="65" cy="8" />
+        <circle class="lap lap8 hidden" data-lap="8" r="2" cx="71" cy="8" />
+        <circle class="lap lap9 hidden" data-lap="9" r="2" cx="77" cy="8" />
+      </g>
+
+      <circle id="startStopBorder" r="8.4" cx="91.5" cy="8.5" stroke-width="0.2" fill="none" />
+      <circle id="startStop" r="8" cx="91.5" cy="8.5"/>
+      </svg>
+    <script src="main.js"></script>
+  </body>
+</html>
+<!--
+
+
+
+Running time -> how much time elapsed
+
+-->

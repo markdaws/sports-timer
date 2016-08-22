@@ -1,0 +1,22 @@
+{
+  "name": "timer",
+  "version": "1.0.0",
+  "description": "Sports / Crosfit Online Timer",
+  "main": "main.js",
+    "scripts": {
+        "start": "node_modules/.bin/serve -p 9999 .",
+     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "timer",
+    "crossfit",
+    "tabata",
+    "clock",
+    "countdown"
+  ],
+  "author": "Mark Dawson",
+  "license": "MIT",
+  "dependencies": {
+    "serve": "^1.4.0"
+  }
+}
