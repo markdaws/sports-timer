@@ -7,7 +7,19 @@ Util.pad = function(num, size) {
 };
 
 function Timer(tickCb, newLapCb, clearCb) {
-    this.countdownFrom = 5000;
+    this.countdownFrom = 0;
+    this.sets = [];/*
+        {
+            work: 5000,
+            rest: 4000
+        },
+        {
+            work: 10000,
+            rest: 6000
+        }
+    ];*/
+    this._currentSet = 1;
+    this._setWorking = true;
     this._tickCb = tickCb;
     this._newLapCb = newLapCb;
     this._clearCb = clearCb;
@@ -15,6 +27,10 @@ function Timer(tickCb, newLapCb, clearCb) {
 }
 
 Timer.prototype = {
+    isCountdownTimer: function() {
+        return this.countdownFrom !== 0 || this.sets.length > 0;
+    },
+
     _elapsed: function() {
         return this._runningTotal + this._currentTotal;
     },
@@ -54,8 +70,9 @@ Timer.prototype = {
         this._startTime = null;
         this._runningTotal = 0;
         this._currentTotal = 0;
-        this._lastTimestamp = -1;
         this._laps = [];
+        this._currentSet = 1;
+        this._setWorking = true;
     },
 
     startTimer: function() {
@@ -87,15 +104,30 @@ Timer.prototype = {
                     }
                 }
                 else {
-                    if (this.countdownFrom !== 0) {
+                    if (this.sets.length > 0) {
+                        var set = this.sets[this._currentSet];
+                        //3000/2000
+                        elapsed = (this._setWorking ? set.work : set.rest) - elapsed;
+                        if (elapsed <= 0) {
+                            if (!this._setWorking) {
+                                ++this._currentSet;
+                                if (this._currentSet >= this.sets.length) {
+                                    this.stopTimer();
+                                }
+                            }
+                            this._startTime = new Date().getTime();
+                            this._runningTotal = this._currentTotal = 0;
+                            this._lastTick = -9999;
+                            this._setWorking = !this._setWorking;
+                        }
+                    } else if (this.countdownFrom !== 0) {
                         // Timer is counting down instead of up
                         elapsed = this.countdownFrom - elapsed;
 
                         if (elapsed <= 0) {
                             this.stopTimer();
                         }
-                    }
-                    else {
+                    } else {
                         // Wrap time if goes past 99:59
                         if (elapsed >= 100 * 60 * 1000) {
                             elapsed -= 100 * 60 * 1000;
@@ -114,7 +146,6 @@ Timer.prototype = {
 
     stopTimer: function() {
         this._runningTotal += this._currentTotal;
-
         this._isRunning = false;
         this._startTime = null;
         this._currentTotal = 0;
@@ -168,14 +199,20 @@ Timer.prototype = {
             var format = 'MM:SS';
             if (isStartCountdown) {
                 format = 'SS';
+            }
 
-                if (starting) {
-                    longBeep.play();
-                }
-                else if (elapsed <= 3000) {
+            // Starting countdown or countdown timer and reached the end of the timer
+            // then beep
+            if (isStartCountdown || timer.isCountdownTimer()) {
+                if (elapsed > 0 && elapsed <= 3000) {
                     shortBeep.play();
                 }
             }
+
+            if (starting || (timer.isCountdownTimer() && elapsed <= 0)) {
+                longBeep.play();
+            }
+
             renderTime(elapsed, format);
         }
     };
