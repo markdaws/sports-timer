@@ -82,6 +82,11 @@ Timer.prototype = {
                         elapsed = 0;
                     }
                 }
+
+                // Wrap time if goes past 99:59
+                if (elapsed >= 100 * 60 * 1000) {
+                    elapsed -= 100 * 60 * 1000;
+                }
                 this._tickCb(this, elapsed, isCountdown);
             }
             setTimeout(loop, 100);
@@ -149,7 +154,6 @@ Timer.prototype = {
             if (isStartCountdown) {
                 format = 'SS';
 
-                console.log(elapsed);
                 if (elapsed <= 0) {
                     longBeep.play();
                 }
