@@ -7,6 +7,7 @@ Util.pad = function(num, size) {
 };
 
 function Timer(tickCb, newLapCb, clearCb) {
+    this.countdownFrom = 5000;
     this._tickCb = tickCb;
     this._newLapCb = newLapCb;
     this._clearCb = clearCb;
@@ -63,31 +64,45 @@ Timer.prototype = {
                 return;
             }
 
-            var delta = new Date().getTime() - this._startTime;
+            var delta = Math.floor((new Date().getTime() - this._startTime) / 1000) * 1000;
             this._currentTotal = delta;
+            var starting = false;
 
             // Tick only once per second
-            if (this._currentTotal - this._lastTick  > 1000) {
+            if (this._currentTotal - this._lastTick  >= 1000) {
                 this._lastTick = this._currentTotal;
 
                 var elapsed = this._elapsed();
                 var isCountdown = this._isStartCountdown;
-                if (this._isStartCountdown) {
-                    elapsed = 11000 - elapsed;
 
-                    if (elapsed < 1000) {
+                if (this._isStartCountdown) {
+                    elapsed = 10000 - elapsed;
+
+                    if (elapsed <= 0) {
                         this.reset();
                         this._isStartCountdown = false;
                         this._startTime = new Date().getTime();
-                        elapsed = 0;
+                        elapsed = this.countdownFrom;
+                        starting = true;
                     }
                 }
+                else {
+                    if (this.countdownFrom !== 0) {
+                        // Timer is counting down instead of up
+                        elapsed = this.countdownFrom - elapsed;
 
-                // Wrap time if goes past 99:59
-                if (elapsed >= 100 * 60 * 1000) {
-                    elapsed -= 100 * 60 * 1000;
+                        if (elapsed <= 0) {
+                            this.stopTimer();
+                        }
+                    }
+                    else {
+                        // Wrap time if goes past 99:59
+                        if (elapsed >= 100 * 60 * 1000) {
+                            elapsed -= 100 * 60 * 1000;
+                        }
+                    }
                 }
-                this._tickCb(this, elapsed, isCountdown);
+                this._tickCb(this, elapsed, isCountdown, starting);
             }
             setTimeout(loop, 100);
         }.bind(this);
@@ -146,7 +161,7 @@ Timer.prototype = {
 
     var shortBeep = document.getElementById('shortBeep');
     var longBeep = document.getElementById('longBeep');
-    var tickCb = function(timer, elapsed, isStartCountdown) {
+    var tickCb = function(timer, elapsed, isStartCountdown, starting) {
         lastTickTime = elapsed;
 
         if (!selectedLap) {
@@ -154,10 +169,10 @@ Timer.prototype = {
             if (isStartCountdown) {
                 format = 'SS';
 
-                if (elapsed <= 0) {
+                if (starting) {
                     longBeep.play();
                 }
-                else if (elapsed <= 4000) {
+                else if (elapsed <= 3000) {
                     shortBeep.play();
                 }
             }
@@ -176,7 +191,7 @@ Timer.prototype = {
         for (i=0; i<10; ++i) {
             lapElByIndex(i).classList.remove('lapSelected');
         }
-        renderTime(0);
+        renderTime(timer.countdownFrom);
         selectedLap = null;
         isCountdown = true;
     };
