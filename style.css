@@ -52,10 +52,11 @@ body {
 }
 
 .time {
-    text-align: center;
+    text-align: right;
     color: red;
     padding: 0;
     margin: 0;
+    margin-bottom: -10px;
     font-family: "LED";
     font-size: 43vw;
 }

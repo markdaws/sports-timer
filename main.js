@@ -1,19 +1,5 @@
 function Util() {}
 
-Util.requestAnimFrame = (function() {
-    var anim = window.requestAnimationFrame ||
-        window.webkitRequestAnimationFrame ||
-        window.mozRequestAnimationFrame ||
-        window.oRequestAnimationFrame ||
-        window.msRequestAnimationFrame ||
-        function(callback, element){
-            window.setTimeout(callback, 1000 / 60);
-        };
-    return function(args) {
-        anim.call(window, args);
-    };
-})();
-
 Util.pad = function(num, size) {
     var s = num + '';
     while (s.length < size) s = '0' + s;
@@ -24,38 +10,31 @@ function Timer(tickCb, newLapCb, clearCb) {
     this._tickCb = tickCb;
     this._newLapCb = newLapCb;
     this._clearCb = clearCb;
-    this._startTime = null;
-    this._isRunning = false;
-    this._runningTotal = 0;
-    this._currentTotal = 0;
-    this._lastLap = 0;
-    this.laps = [];
+    this.reset();
 }
 
 Timer.prototype = {
+    _elapsed: function() {
+        return this._runningTotal + this._currentTotal;
+    },
+
     toggleTimer: function() {
-        var isRunning = false;
-        return function() {
-            var el = document.getElementById('startStop');
-            var borderEl = document.getElementById('startStopBorder');
-            if (isRunning) {
-                el.style.fill = '#00ff00';
-                borderEl.style.stroke = '#00ff00';
-                this.stopTimer();
-            }
-            else {
-                el.style.fill = '#ff0000';
-                borderEl.style.stroke = '#ff0000';
-                this.startTimer();
-            }
-            isRunning = !isRunning;
-        };
-    }(),
+        if (this._isRunning) {
+            this.stopTimer();
+        }
+        else {
+            this.startTimer();
+        }
+    },
 
     lapResetTimer: function() {
         if (this._isRunning) {
+            if (this._laps.length === 10) {
+                return;
+            }
+
             var currentTotal = this._runningTotal + this._currentTotal;
-            this.laps.push({
+            this._laps.push({
                 time: currentTotal - this._lastLap
             });
             this._lastLap = currentTotal;
@@ -68,40 +47,66 @@ Timer.prototype = {
     },
 
     reset: function() {
+        this._isStartCountdown = true;
+        this._lastLap = 0;
+        this._lastTick = -9999;
         this._startTime = null;
         this._runningTotal = 0;
         this._currentTotal = 0;
-        this.laps = [];
+        this._lastTimestamp = -1;
+        this._laps = [];
     },
 
     startTimer: function() {
-        function loop(timestamp) {
+        var loop = function() {
             if (!this._isRunning) {
                 return;
             }
 
-            if (!this._startTime) {
-                this._startTime = timestamp;
-            }
-
-            var delta = timestamp - this._startTime;
+            var delta = new Date().getTime() - this._startTime;
             this._currentTotal = delta;
-            this._tickCb(this);
-            Util.requestAnimFrame(loop.bind(this));
-        }
+
+            // Tick only once per second
+            if (this._currentTotal - this._lastTick  > 1000) {
+                this._lastTick = this._currentTotal;
+
+                var elapsed = this._elapsed();
+                var isCountdown = this._isStartCountdown;
+                if (this._isStartCountdown) {
+                    elapsed = 11000 - elapsed;
+
+                    if (elapsed < 1000) {
+                        this.reset();
+                        this._isStartCountdown = false;
+                        this._startTime = new Date().getTime();
+                        elapsed = 0;
+                    }
+                }
+                this._tickCb(this, elapsed, isCountdown);
+            }
+            setTimeout(loop, 100);
+        }.bind(this);
+
         this._isRunning = true;
-        Util.requestAnimFrame(loop.bind(this));
+        this._startTime = new Date().getTime();
+        setTimeout(loop, 100);
     },
 
     stopTimer: function() {
+        this._runningTotal += this._currentTotal;
+
         this._isRunning = false;
         this._startTime = null;
-        this._runningTotal += this._currentTotal;
         this._currentTotal = 0;
+        this._lastTick = -9999;
     },
 
-    getElapsed: function() {
-        return this._runningTotal + this._currentTotal;
+    laps: function() {
+        return this._laps;
+    },
+
+    isRunning: function() {
+        return this._isRunning;
     }
 };
 
@@ -109,6 +114,7 @@ Timer.prototype = {
 
     var selectedLap = null;
     var isCountdown = true;
+    var lastTickTime = null;
 
     var lapElByIndex = function(index) {
         return document.getElementsByClassName('lap' + index)[0];
@@ -129,42 +135,44 @@ Timer.prototype = {
 
         case 'SS':
             el.innerText = sec;
+            break;
         }
     };
 
-    var tickCb = function(timer) {
-        if (!selectedLap) {
+    var shortBeep = document.getElementById('shortBeep');
+    var longBeep = document.getElementById('longBeep');
+    var tickCb = function(timer, elapsed, isStartCountdown) {
+        lastTickTime = elapsed;
 
-            var elapsed = timer.getElapsed();
+        if (!selectedLap) {
             var format = 'MM:SS';
-            if (isCountdown) {
+            if (isStartCountdown) {
                 format = 'SS';
 
-                // Counting down from 10
-                if (elapsed > 10000) {
-                    isCountdown = false;
-                    elapsed = elapsed - 10000;
-                    timer.reset();
+                console.log(elapsed);
+                if (elapsed <= 0) {
+                    longBeep.play();
                 }
-                else {
-                    //11000 so that 10 shows for 1 second
-                    elapsed = 11000 - elapsed;
+                else if (elapsed <= 4000) {
+                    shortBeep.play();
                 }
             }
             renderTime(elapsed, format);
         }
     };
     var newLapCb = function(timer) {
-        var i = timer.laps.length - 1;
+        var i = timer.laps().length - 1;
         lapElByIndex(i).classList.remove('hidden');
     };
     var clearCb = function(timer) {
-        for (var i=0; i<10; ++i) {
+        var i;
+        for (i=0; i<10; ++i) {
             lapElByIndex(i).classList.add('hidden');
         }
-        for (var i=0; i<10; ++i) {
+        for (i=0; i<10; ++i) {
             lapElByIndex(i).classList.remove('lapSelected');
         }
+        renderTime(0);
         selectedLap = null;
         isCountdown = true;
     };
@@ -174,11 +182,18 @@ Timer.prototype = {
     var byId = document.getElementById.bind(document);
     byId('lapReset').addEventListener('click', function() {
         timer.lapResetTimer();
-        if (!selectedLap) {
-            renderTime(0);
-        }
     });
     byId('startStop').addEventListener('click', function() {
+        var el = document.getElementById('startStop');
+        var borderEl = document.getElementById('startStopBorder');
+        if (timer.isRunning()) {
+            el.style.fill = '#00ff00';
+            borderEl.style.stroke = '#00ff00';
+        }
+        else {
+            el.style.fill = '#ff0000';
+            borderEl.style.stroke = '#ff0000';
+        }
         timer.toggleTimer();
     });
     byId('laps').addEventListener('click', function(evt) {
@@ -191,11 +206,11 @@ Timer.prototype = {
         if (selectedLap == evt.target) {
             lapEl.classList.remove('lapSelected');
             selectedLap = null;
-            renderTime(timer.getElapsed());
+            renderTime(lastTickTime);
         }
         else {
             selectedLap = lapEl;
-            var lap = timer.laps[parseInt(lapEl.getAttribute('data-lap'), 10)];
+            var lap = timer.laps()[parseInt(lapEl.getAttribute('data-lap'), 10)];
             renderTime(lap.time);
         }
     });
