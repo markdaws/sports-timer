@@ -8,7 +8,7 @@ Util.pad = function(num, size) {
 
 function Timer(tickCb, newLapCb, clearCb) {
     this.countdownFrom = 0;
-    this.sets = [
+    this.sets = [];/*
         {
             work: 5000,
             rest: 0
@@ -17,7 +17,7 @@ function Timer(tickCb, newLapCb, clearCb) {
             work: 5000,
             rest: 0
         }
-    ];
+    ];*/
     this._currentSet = 1;
     this._setWorking = true;
     this._tickCb = tickCb;
@@ -46,6 +46,10 @@ Timer.prototype = {
 
     lapResetTimer: function() {
         if (this._isRunning) {
+            if (this._isStartCountdown) {
+                return;
+            }
+
             if (this._laps.length === 10) {
                 return;
             }

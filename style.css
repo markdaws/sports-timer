@@ -20,6 +20,18 @@ body {
     visibility: hidden;
 }
 
+#intervalCount {
+    fill: #ffffff;
+    font-family: 'Helvetica Neue';
+    font-size: 10px;
+}
+
+#intervalHeader {
+    fill: #ffffff;
+    font-family: 'Helvetica Neue';
+    font-size: 3px;
+}
+
 .lap {
     fill: gray;
     cursor: pointer;
