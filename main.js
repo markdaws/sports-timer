@@ -8,16 +8,16 @@ Util.pad = function(num, size) {
 
 function Timer(tickCb, newLapCb, clearCb) {
     this.countdownFrom = 0;
-    this.sets = [];/*
+    this.sets = [
         {
             work: 5000,
-            rest: 4000
+            rest: 0
         },
         {
-            work: 10000,
-            rest: 6000
+            work: 5000,
+            rest: 0
         }
-    ];*/
+    ];
     this._currentSet = 1;
     this._setWorking = true;
     this._tickCb = tickCb;
@@ -71,7 +71,7 @@ Timer.prototype = {
         this._runningTotal = 0;
         this._currentTotal = 0;
         this._laps = [];
-        this._currentSet = 1;
+        this._currentSet = 0;
         this._setWorking = true;
     },
 
@@ -240,6 +240,16 @@ Timer.prototype = {
         timer.lapResetTimer();
     });
     byId('startStop').addEventListener('click', function() {
+        // On iOS you can't play back sounds unless it comes from a user
+        // action first, so pretend to play the sound in this callback so
+        // that it actually plays in the timer countdown later on
+        shortBeep.play();
+        shortBeep.pause();
+        shortBeep.currentTime = 0;
+        longBeep.play();
+        longBeep.pause();
+        longBeep.currentTime = 0;
+
         var el = document.getElementById('startStop');
         var borderEl = document.getElementById('startStopBorder');
         if (timer.isRunning()) {
@@ -271,3 +281,8 @@ Timer.prototype = {
         }
     });
 })();
+
+/*
+//TODO: No laps on tabata
+//TODO: start/stop throw error end tabata
+*/
