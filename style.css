@@ -4,7 +4,9 @@
 }
 
 body {
+    color: #ffffff;
     background-color: black;
+    font-family: 'Helvetica Neue';
 }
 
 #controls {
@@ -22,13 +24,11 @@ body {
 
 #intervalCount {
     fill: #ffffff;
-    font-family: 'Helvetica Neue';
     font-size: 10px;
 }
 
 #intervalHeader {
     fill: #ffffff;
-    font-family: 'Helvetica Neue';
     font-size: 3px;
 }
 
@@ -80,4 +80,43 @@ body {
     margin-bottom: -10px;
     font-family: "LED";
     font-size: 43vw;
+}
+
+#settingsUI p {
+    font-size: 20px;
+}
+
+#settingsUI label {
+    font-size: 12px;
+}
+
+#settingsUI .workTime label,
+#settingsUI .restTime label,
+#settingsUI .numSets label {
+    display: block;
+    padding-bottom: 4px;
+}
+
+#settingsUI input {
+    height: 34px;
+    font-size: 14px;
+    padding: 6px 12px;
+    border: 1px solid #ffffff;
+    border-radius: 4px;
+    margin-bottom: 30px;
+    width: 100px;
+}
+
+#settingsUI .buttons {
+    margin-right: 8px;
+}
+
+#settingsUI button {
+    color: #ffffff;
+    background: #000000;
+    border: 1px solid #ffffff;
+    border-radius: 4px;
+    font-size: 14px;
+    width: 100px;
+    height: 34px;
 }

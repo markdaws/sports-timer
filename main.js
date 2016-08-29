@@ -1,34 +1,29 @@
-function Util() {}
-
-Util.pad = function(num, size) {
-    var s = num + '';
-    while (s.length < size) s = '0' + s;
-    return s;
-};
-
-function Timer(tickCb, newLapCb, clearCb) {
+function Timer(tickCb, newLapCb, clearCb, newSetCb) {
     this.countdownFrom = 0;
-    this.sets = [];/*
+    this.sets = [
         {
             work: 5000,
-            rest: 0
+            rest: 1000
         },
         {
             work: 5000,
-            rest: 0
+            rest: 1000
         }
-    ];*/
-    this._currentSet = 1;
-    this._setWorking = true;
+    ];
     this._tickCb = tickCb;
     this._newLapCb = newLapCb;
     this._clearCb = clearCb;
+    this._newSetCb = newSetCb;
     this.reset();
 }
 
 Timer.prototype = {
     isCountdownTimer: function() {
         return this.countdownFrom !== 0 || this.sets.length > 0;
+    },
+
+    currentSet: function() {
+        return this._currentSet + 1;
     },
 
     _elapsed: function() {
@@ -77,6 +72,7 @@ Timer.prototype = {
         this._laps = [];
         this._currentSet = 0;
         this._setWorking = true;
+        this._startCountdownLength = 3000;
     },
 
     startTimer: function() {
@@ -97,7 +93,7 @@ Timer.prototype = {
                 var isCountdown = this._isStartCountdown;
 
                 if (this._isStartCountdown) {
-                    elapsed = 10000 - elapsed;
+                    elapsed = this._startCountdownLength - elapsed;
 
                     if (elapsed <= 0) {
                         this.reset();
@@ -110,13 +106,15 @@ Timer.prototype = {
                 else {
                     if (this.sets.length > 0) {
                         var set = this.sets[this._currentSet];
-                        //3000/2000
                         elapsed = (this._setWorking ? set.work : set.rest) - elapsed;
                         if (elapsed <= 0) {
                             if (!this._setWorking) {
                                 ++this._currentSet;
                                 if (this._currentSet >= this.sets.length) {
                                     this.stopTimer();
+                                }
+                                else {
+                                    this._newSetCb(this);
                                 }
                             }
                             this._startTime = new Date().getTime();
@@ -133,9 +131,7 @@ Timer.prototype = {
                         }
                     } else {
                         // Wrap time if goes past 99:59
-                        if (elapsed >= 100 * 60 * 1000) {
-                            elapsed -= 100 * 60 * 1000;
-                        }
+                        elapsed = elapsed % (100 * 60 * 1000);
                     }
                 }
                 this._tickCb(this, elapsed, isCountdown, starting);
@@ -168,15 +164,20 @@ Timer.prototype = {
 (function() {
 
     var selectedLap = null;
-    var isCountdown = true;
     var lastTickTime = null;
 
+    function pad(num, size) {
+        var s = num + '';
+        while (s.length < size) s = '0' + s;
+        return s;
+    }
+    
     var lapElByIndex = function(index) {
         return document.getElementsByClassName('lap' + index)[0];
     };
     var renderTime = function(elapsed, format) {
-        var min = Util.pad(parseInt((elapsed / 1000) / 60, 10), 2);
-        var sec = Util.pad(parseInt(elapsed / 1000 % 60, 10), 2);
+        var min = pad(parseInt((elapsed / 1000) / 60, 10), 2);
+        var sec = pad(parseInt(elapsed / 1000 % 60, 10), 2);
         var el = document.getElementsByClassName('time')[0];
 
         if (!format) {
@@ -192,6 +193,25 @@ Timer.prototype = {
             el.innerText = sec;
             break;
         }
+    };
+    var renderIntervals = function(timer) {
+        document.getElementById('intervalCount').childNodes[0].nodeValue = timer.currentSet() + '/' + timer.sets.length;
+    };
+    var renderControls = function(timer) {
+        var el = document.getElementById('startStop');
+        var borderEl = document.getElementById('startStopBorder');
+        if (!timer.isRunning()) {
+            el.style.fill = '#00ff00';
+            borderEl.style.stroke = '#00ff00';
+        }
+        else {
+            el.style.fill = '#ff0000';
+            borderEl.style.stroke = '#ff0000';
+        }
+    };
+    var render = function(timer) {
+        renderControls(timer);
+        renderIntervals(timer);
     };
 
     var shortBeep = document.getElementById('shortBeep');
@@ -209,12 +229,12 @@ Timer.prototype = {
             // then beep
             if (isStartCountdown || timer.isCountdownTimer()) {
                 if (elapsed > 0 && elapsed <= 3000) {
-                    shortBeep.play();
+                    //shortBeep.play();
                 }
             }
 
             if (starting || (timer.isCountdownTimer() && elapsed <= 0)) {
-                longBeep.play();
+                //longBeep.play();
             }
 
             renderTime(elapsed, format);
@@ -232,12 +252,16 @@ Timer.prototype = {
         for (i=0; i<10; ++i) {
             lapElByIndex(i).classList.remove('lapSelected');
         }
-        renderTime(timer.countdownFrom);
+        render(timer);
         selectedLap = null;
-        isCountdown = true;
+    };
+    var newSetCb = function(timer) {
+        renderIntervals(timer);
     };
 
-    var timer = new Timer(tickCb, newLapCb, clearCb);
+    var timer = new Timer(tickCb, newLapCb, clearCb, newSetCb);
+    //TODO: Remove
+    render(timer);
 
     var byId = document.getElementById.bind(document);
     byId('lapReset').addEventListener('click', function() {
@@ -254,17 +278,8 @@ Timer.prototype = {
         longBeep.pause();
         longBeep.currentTime = 0;
 
-        var el = document.getElementById('startStop');
-        var borderEl = document.getElementById('startStopBorder');
-        if (timer.isRunning()) {
-            el.style.fill = '#00ff00';
-            borderEl.style.stroke = '#00ff00';
-        }
-        else {
-            el.style.fill = '#ff0000';
-            borderEl.style.stroke = '#ff0000';
-        }
         timer.toggleTimer();
+        render(timer);
     });
     byId('laps').addEventListener('click', function(evt) {
         for (var i=0; i<10; ++i) {
@@ -285,8 +300,3 @@ Timer.prototype = {
         }
     });
 })();
-
-/*
-//TODO: No laps on tabata
-//TODO: start/stop throw error end tabata
-*/

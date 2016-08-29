@@ -7,32 +7,57 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
   </head>
   <body>
-    <p class="time noselect">00:00</p>
-    <svg id="controls" viewBox="0 0 100 20" xmlns="http://www.w3.org/2000/svg">
-      <circle id="lapResetBorder" r="8.4" cx="8.5" cy="8.5" stroke-width="0.2" fill="none" />
-      <circle id="lapReset" r="8" cx="8.5" cy="8.5"/>
+    <div id="timerUI" style="display:none">
+      <p class="time noselect">00:00</p>
+      <svg id="controls" viewBox="0 0 100 20" xmlns="http://www.w3.org/2000/svg">
+        <circle id="lapResetBorder" r="8.4" cx="8.5" cy="8.5" stroke-width="0.2" fill="none" />
+        <circle id="lapReset" r="8" cx="8.5" cy="8.5"/>
 
-      <g id="laps">
-        <circle class="lap lap0 hidden" data-lap="0" r="2" cx="23" cy="8" />
-        <circle class="lap lap1 hidden" data-lap="1" r="2" cx="29" cy="8" />
-        <circle class="lap lap2 hidden" data-lap="2" r="2" cx="35" cy="8" />
-        <circle class="lap lap3 hidden" data-lap="3" r="2" cx="41" cy="8" />
-        <circle class="lap lap4 hidden" data-lap="4" r="2" cx="47" cy="8" />
-        <circle class="lap lap5 hidden" data-lap="5" r="2" cx="53" cy="8" />
-        <circle class="lap lap6 hidden" data-lap="6" r="2" cx="59" cy="8" />
-        <circle class="lap lap7 hidden" data-lap="7" r="2" cx="65" cy="8" />
-        <circle class="lap lap8 hidden" data-lap="8" r="2" cx="71" cy="8" />
-        <circle class="lap lap9 hidden" data-lap="9" r="2" cx="77" cy="8" />
-      </g>
+        <g id="laps">
+          <circle class="lap lap0 hidden" data-lap="0" r="2" cx="23" cy="8" />
+          <circle class="lap lap1 hidden" data-lap="1" r="2" cx="29" cy="8" />
+          <circle class="lap lap2 hidden" data-lap="2" r="2" cx="35" cy="8" />
+          <circle class="lap lap3 hidden" data-lap="3" r="2" cx="41" cy="8" />
+          <circle class="lap lap4 hidden" data-lap="4" r="2" cx="47" cy="8" />
+          <circle class="lap lap5 hidden" data-lap="5" r="2" cx="53" cy="8" />
+          <circle class="lap lap6 hidden" data-lap="6" r="2" cx="59" cy="8" />
+          <circle class="lap lap7 hidden" data-lap="7" r="2" cx="65" cy="8" />
+          <circle class="lap lap8 hidden" data-lap="8" r="2" cx="71" cy="8" />
+          <circle class="lap lap9 hidden" data-lap="9" r="2" cx="77" cy="8" />
+        </g>
 
-      <circle id="startStopBorder" r="8.4" cx="91.5" cy="8.5" stroke-width="0.2" fill="none" />
-      <circle id="startStop" r="8" cx="91.5" cy="8.5"/>
-      <text id="intervalHeader" y="3" x="50" text-anchor="middle">INTERVAL</text>
-      <text id="intervalCount" y="13" x="50" text-anchor="middle">1/16</text>
-    </svg>
+        <circle id="startStopBorder" r="8.4" cx="91.5" cy="8.5" stroke-width="0.2" fill="none" />
+        <circle id="startStop" r="8" cx="91.5" cy="8.5"/>
+        <text id="intervalHeader" y="3" x="50" text-anchor="middle">INTERVAL</text>
+        <text id="intervalCount" y="13" x="50" text-anchor="middle">1/16</text>
+      </svg>
 
-    <audio id="longBeep" src="beep-01a.wav" autostart="false" ></audio>
-    <audio id="shortBeep" src="beep-07.wav" autostart="false" ></audio>
+      <audio id="longBeep" src="beep-01a.wav" autostart="false" ></audio>
+      <audio id="shortBeep" src="beep-07.wav" autostart="false" ></audio>
+    </div>
+    <div id="settingsUI" style="color:#ffffff">
+      <p>COUNTDOWN</p>
+      <input type="number" placeholder="min" min="0" max="99"/>
+      <input type="number" placeholder="sec" min="0" max="59"/>
+      <p>SETS</p>
+      <div class="workTime">
+        <label>WORK TIME</label>
+        <input type="number" placeholder="min" min="0" max="99"/>
+        <input type="number" placeholder="sec" min="0" max="59"/>
+      </div>
+      <div class="restTime">
+        <label>REST TIME</label>
+        <input type="number" placeholder="min" min="0" max="99"/>
+        <input type="number" placeholder="sec" min="0" max="59"/>
+      </div>
+      <div class="numSets">
+        <label>#SETS</label>
+        <input type="number" value="0" min="0" max="99"/>
+      </div>
+      <div class="buttons">
+        <button>Done</button>
+      </div>
+    </div>
     <script src="main.js"></script>
   </body>
 </html>
