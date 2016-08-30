@@ -1,7 +1,10 @@
 # sports-timer
-I couldn't find a good online sports timer for intervals and tabata that looks good on mobile/tablet, so I made one.
+I couldn't find a good online timer that I could use for Crossfit and tabata style workouts that looked good on iPad/iPhone, so I made one.
 
 http://markdaws.net/sports-timer/
+
+![](/ipad_screenshot.jpg)
+![](/iphone_screenshot.png)
 
 ##Installing on iOS
 The app is a webpage but I would suggest adding it to your home screen as an app.  You will then get the timer in full-screen mode each time it launches.
