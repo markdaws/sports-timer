@@ -7,7 +7,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
   </head>
   <body>
-    <div id="timerUI" style="display:none">
+    <div id="timerUI">
       <p class="time noselect">00:00</p>
       <svg id="controls" viewBox="0 0 100 20" xmlns="http://www.w3.org/2000/svg">
         <circle id="lapResetBorder" r="8.4" cx="8.5" cy="8.5" stroke-width="0.2" fill="none" />
@@ -28,36 +28,47 @@
 
         <circle id="startStopBorder" r="8.4" cx="91.5" cy="8.5" stroke-width="0.2" fill="none" />
         <circle id="startStop" r="8" cx="91.5" cy="8.5"/>
-        <text id="intervalHeader" y="3" x="50" text-anchor="middle">INTERVAL</text>
-        <text id="intervalCount" y="13" x="50" text-anchor="middle">1/16</text>
+        <g id="intervalUI" class="hidden">
+          <text id="intervalHeader" y="3" x="50" text-anchor="middle">INTERVAL</text>
+          <text id="intervalCount" y="13" x="50" text-anchor="middle">1/16</text>
+        </g>
       </svg>
 
+      <div id="timerButtons">
+        <a id="muteToggleButton">
+          <img src="speaker-muted.png" width="20" height="16"/>
+        </a>
+        <a id="settingsButton">
+          <img src="cog.png" width="16" height="16"/>
+        </a>
+      </div>
       <audio id="longBeep" src="beep-01a.wav" autostart="false" ></audio>
       <audio id="shortBeep" src="beep-07.wav" autostart="false" ></audio>
     </div>
-    <div id="settingsUI" style="color:#ffffff">
+    <div id="settingsUI" class="hidden">
       <p>COUNTDOWN</p>
-      <input type="number" placeholder="min" min="0" max="99"/>
-      <input type="number" placeholder="sec" min="0" max="59"/>
+      <input id="countdownMin" type="number" placeholder="min" min="0" max="99"/>
+      <input id="countdownSec" type="number" placeholder="sec" min="0" max="59"/>
       <p>SETS</p>
       <div class="workTime">
         <label>WORK TIME</label>
-        <input type="number" placeholder="min" min="0" max="99"/>
-        <input type="number" placeholder="sec" min="0" max="59"/>
+        <input id="workMin" type="number" placeholder="min" min="0" max="99"/>
+        <input id="workSec" type="number" placeholder="sec" min="0" max="59"/>
       </div>
       <div class="restTime">
         <label>REST TIME</label>
-        <input type="number" placeholder="min" min="0" max="99"/>
-        <input type="number" placeholder="sec" min="0" max="59"/>
+        <input id="restMin" type="number" placeholder="min" min="0" max="99"/>
+        <input id="restSec" type="number" placeholder="sec" min="0" max="59"/>
       </div>
       <div class="numSets">
-        <label>#SETS</label>
-        <input type="number" value="0" min="0" max="99"/>
+        <label># INTERVALS</label>
+        <input id="setsCount" type="number" placeholder="0" min="0" max="99"/>
       </div>
       <div class="buttons">
-        <button>Done</button>
+        <button id="done">Done</button>
       </div>
     </div>
+    <script src="timer.js"></script>
     <script src="main.js"></script>
   </body>
 </html>
