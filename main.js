@@ -82,7 +82,6 @@
         if (isMuted) {
             return;
         }
-        loadAudio();
         shortBeep.play();
     }
 
@@ -90,7 +89,6 @@
         if (isMuted) {
             return;
         }
-        loadAudio();
         longBeep.play();
     }
 
@@ -181,6 +179,7 @@
             src = 'speaker-muted.png';
         } else {
             src = 'speaker.png';
+            loadAudio();
         }
         document.querySelector('#muteToggleButton img').src = src;
     });

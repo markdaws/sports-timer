@@ -47,6 +47,12 @@ Timer.prototype = {
             if (this._isStartCountdown) {
                 return;
             }
+            if (this.sets.length > 0) {
+                return;
+            }
+            if (this.countdownFrom !== 0) {
+                return;
+            }
 
             if (this._laps.length === 10) {
                 return;

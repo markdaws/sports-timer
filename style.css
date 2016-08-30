@@ -32,7 +32,7 @@ body {
 
 #muteToggleButton {
     margin-right: 100px;
-    margin-left: -10px;
+    margin-left: -18px;
 }
 
 #intervalCount {
@@ -92,7 +92,7 @@ body {
     margin: 0;
     margin-bottom: -10px;
     font-family: "LED";
-    font-size: 43vw;
+    font-size: 42vw;
 }
 
 #settingsUI {
