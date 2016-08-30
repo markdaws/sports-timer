@@ -1,3 +1,5 @@
+'use strict';
+
 function Timer(tickCb, newLapCb, clearCb, newSetCb) {
     this.countdownFrom = 0;
     this.sets = [];
