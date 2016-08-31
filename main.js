@@ -226,6 +226,11 @@
             timer.setSets(sets);
             byId('intervalUI').classList.remove('hidden');
         }
+        else {
+            timer.setSets([]);
+            timer.setCountdown(0, 0);
+            byId('intervalUI').classList.add('hidden');
+        }
 
         renderControls(timer);
         renderIntervals(timer);
