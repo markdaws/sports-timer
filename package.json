@@ -4,7 +4,7 @@
   "description": "Sports / Crosfit Online Timer",
   "main": "main.js",
     "scripts": {
-        "start": "node_modules/.bin/serve -p 9999 .",
+        "start": "node_modules/.bin/serve -p 9999 ./app",
      "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [

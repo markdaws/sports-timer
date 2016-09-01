@@ -1,9 +1,0 @@
-* Tasks
-** TODO Update interval UI when interval completes
-** TODO Add mute/unmute button
-** TODO Store app state in localstorage to fix pinned app reload issue
-
-* Settings page
-** TODO Add countdown time input
-** TODO Tabata inputs, work/rest/sets
-

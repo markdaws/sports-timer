@@ -1,7 +1,7 @@
 # Sports Timer
 I couldn't find an online timer that I could use for Crossfit and tabata style workouts that looked good on iPad/iPhone, so I made one.
 
-http://markdaws.net/sports-timer/
+http://markdaws.net/sports-timer/app
 
 ![](/ipad_screenshot.jpg)
 ![](/iphone_timer.jpg)
@@ -14,10 +14,12 @@ On a regular timer, if you press the left gray circle you can save a lap time, c
 ### Intervals
 A popular format for Crossfit workouts is tabata, with 20 seconds of work, 10 seconds of rest, for 8 intervals.  You can set your work time, rest time and number of intervals on the settings page.
 
-## Audible Beeps
+### Audible Beeps
 By default the app is muted, you can press the unmute button at the bottom and then when the timer is counting down it will beep every second from 3, 2, 1 down to 0.
 
 **NOTE:** If you are playing audio in the background e.g. using Spotify, the beeps do cause the background music app to stop playing which is really annoying, so by default this feature is muted.
+
+**NOTE:** If you have the app pinned to your home page, the beeps will not play, but they do play if you launch the page in iOS Safari.
 
 ## Installing on iOS
 The app is a webpage but I would suggest adding it to your home screen as an app.  You will then get the timer in full-screen mode each time it launches.
