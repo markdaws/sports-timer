@@ -33,3 +33,6 @@ If you are not seeing the correct font when the page loads, or icons are missing
 
 ## Disclaimer
 This app has only been tested on an iPhone, iPad and on Chrome/Mac.
+
+## Font
+The digital font is freeware and available from the following site: http://www.styleseven.com/
