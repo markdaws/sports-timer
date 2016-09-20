@@ -1,5 +1,5 @@
 # Sports Timer
-I couldn't find an online timer that I could use for Crossfit and tabata style workouts that looked good on iPad/iPhone, so I made one.
+I couldn't find an online timer that I could use for Crossfit and tabata style workouts that looked good on iPad/iPhone, so I made one.  Great for home gym enthusiasts.
 
 http://markdaws.net/sports-timer/app
 
